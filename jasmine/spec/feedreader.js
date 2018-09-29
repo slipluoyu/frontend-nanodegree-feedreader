@@ -24,8 +24,8 @@ $(function() {
         expect(value[val]).toBeDefined();
         expect(value[val].length).not.toBe(0);
         if(val == "url"){
-          var regularExpressionUrl = /^((ht|f)tps?):\/\/([\w\-]+(\.[\w\-]+)*\/)*[\w\-]+(\.[\w\-]+)*\/?(\?([\w\-\.,@?^=%&:\/~\+#]*)+)?/; // 检查 URL 格式是否正确的正规表达式
-          expect(value[val]).toMatch(regularExpressionUrl); // 检查格式
+          var regUrl = /^((ht|f)tps?):\/\/[\w\-]+(\.[\w\-]+)+([\w\-\.,@?^=%&:\/~\+#]*[\w\-\@?^=%&\/~\+#])?$/;
+          expect(value[val]).toMatch(regUrl);
         }
       }
     }
@@ -86,7 +86,7 @@ $(function() {
        });
      });
      it('test new loader', function(done) {
-       expect(_html1).not.toEqual(_html2);
+       expect(_html1 == _html2).toBe(false);
        console.info("比较完成")
        done()
      })
