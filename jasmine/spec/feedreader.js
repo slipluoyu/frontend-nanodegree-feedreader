@@ -11,20 +11,24 @@ $(function() {
 
     /* 测试allFeeds变量中的url 是否声明并且不为空*/
     it('URL defined', function() {
-      for (const value of allFeeds) {
-        expect(value.url).toBeDefined();
-        expect(value.url.length).not.toBe(0);
-      }
+      xbeDefined("url");
     });
-
-
     /* 测试allFeeds变量中的name 是否声明并且不为空 */
     it('name defined', function() {
-      for (const value of allFeeds) {
-        expect(value.name).toBeDefined();
-        expect(value.name.length).not.toBe(0);
-      }
+      xbeDefined("name");
     });
+
+
+    function xbeDefined(val){
+      for (const value of allFeeds) {
+        expect(value[val]).toBeDefined();
+        expect(value[val].length).not.toBe(0);
+        if(val == "url"){
+          var regularExpressionUrl = /^((ht|f)tps?):\/\/([\w\-]+(\.[\w\-]+)*\/)*[\w\-]+(\.[\w\-]+)*\/?(\?([\w\-\.,@?^=%&:\/~\+#]*)+)?/; // 检查 URL 格式是否正确的正规表达式
+          expect(value[val]).toMatch(regularExpressionUrl); // 检查格式
+        }
+      }
+    }
   });
 
 
@@ -32,7 +36,7 @@ $(function() {
     var ut, alist;
     beforeEach(function() {
       ut = $(".menu-icon-link");
-      alist = $("body").attr("class");
+      alist = $("body").hasClass("menu-hidden");
     })
     afterEach(function() {
       ut = null;
@@ -40,26 +44,24 @@ $(function() {
     })
     /*测试菜单默认是否为隐藏 */
     it('menu default', function() {
-      expect(alist).toContain("menu-hidden");
+      expect(alist).toBe(true);
     });
 
     /* 测试 当点击图标的时候菜单是否显示，再次点击的时候是否隐藏 */
     it('menu click', function() {
       ut.trigger("click");
-      alist = $("body").attr("class");
-      expect(alist).not.toContain("menu-hidden");
+      alist = $("body").hasClass("menu-hidden");
+      expect(alist).not.toBe(true);
       ut.trigger("click");
-      alist = $("body").attr("class");
-      expect(alist).toContain("menu-hidden");
+      alist = $("body").hasClass("menu-hidden");
+      expect(alist).toBe(true);
     })
   });
   describe('Initial Entries', function() {
     /* 测试 loadFeed 函数被调用而且工作正常 */
     var _html;
     beforeEach(function(done) {
-      loadFeed(0, function() {
-        done();
-      })
+      loadFeed(0, done)
     });
     it('test loader', function(done) {
       _html = $(".feed").find(".entry").length;
@@ -75,15 +77,17 @@ $(function() {
      beforeEach(function(done) {
        loadFeed(0, function() {
          _html1 = $(".feed").html();
-       });
-       loadFeed(1,function(){
-         _html2 = $(".feed").html();
-         done();
+         console.info("第一次结果")
+         loadFeed(1,function(){
+           _html2 = $(".feed").html();
+            console.info("第二次结果")
+           done();
+         });
        });
      });
      it('test new loader', function(done) {
-
        expect(_html1).not.toEqual(_html2);
+       console.info("比较完成")
        done()
      })
   });
